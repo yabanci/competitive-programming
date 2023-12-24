@@ -12,10 +12,15 @@ typedef long double LD;
 const int mod = 1e9 + 7;
 
 int solve() {
-    int n;
-    cin >> n;
-    string s;
-    cin >> s;
+    int n, k;
+    cin >> n >> k;
+    for (int i = n - k; i <= n; ++i) {
+        cout << i << ' ';
+    }
+    for (int i = n - k - 1; i >= 1; --i) {
+        cout << i << ' ';
+    }
+    cout << endl;
     return 0;
 }
 int main() {

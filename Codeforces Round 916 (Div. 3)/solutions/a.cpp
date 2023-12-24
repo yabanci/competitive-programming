@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cassert>
+#include <vector>
 
 using namespace std;
 
@@ -12,7 +13,19 @@ typedef long double LD;
 const int mod = 1e9 + 7;
 
 int solve() {
-    cout << "nano" << endl;
+    int n;
+    cin >> n;
+    string s;
+    cin >> s;
+    vector<int> cnt(26);
+    for (char c : s) {
+        ++cnt[c - 'A'];
+    }
+    int kolvo = 0;
+    for (int i = 0; i < 26; ++i) {
+        kolvo += (cnt[i] > i);
+    }
+    cout << kolvo << endl;
     return 0;
 }
 int main() {
@@ -20,6 +33,10 @@ int main() {
     assert(freopen("../input.txt", "r", stdin));
     // assert(freopen("../output.txt", "w", stdout));
 #endif
-    solve();
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
     return 0;
 }

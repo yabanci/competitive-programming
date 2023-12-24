@@ -10,56 +10,49 @@ typedef long double LD;
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
 // uniform_int_distribution<int> (l, r)
 const int mod = 1e9 + 7;
-vector<LL> bits_cnt(LL n) {
-    vector<LL> result(60);
-    for (int bit = 0; bit < 60; ++bit) {
-        LL count = (n >> bit) / 2 * (1LL << bit);
-        if ((n >> bit) % 2) {
-            count += (n % (1LL << bit)) + 1;
+int get_smallest(vector<int>& a, vector<int>& b) {
+    unordered_map<int, int> cnt;
+    int l = 0, mini = INT_MAX, found = 0;
+    int n = a.size(), m = b.size();
+    for (int num : b) {
+        --cnt[num];
+    }
+    for (int r = 0; r < n; ++r) {
+        if (cnt.count(a[r])) {
+            ++cnt[a[r]];
+            if (cnt[a[r]] <= 0) {
+                found++;
+            }
         }
-        result[bit] = (count % mod + mod) % mod;
+        while (found == m) {
+            if (r - l + 1 < mini) {
+                mini = r - l + 1;
+            }
+            if (cnt.count(a[l])) {
+                cnt[a[l]]--;
+                if (cnt[a[l]] < 0) {
+                    --found;
+                }
+            }
+            ++l;
+        }
     }
-    return result;
+    return mini;
 }
-// vector<LL> slow_bits_cnt(LL n) {
-//     vector<LL> result(60);
-//     for (int bit = 0; bit < 60; ++bit) {
-//         for (int i = 0; i <= n; ++i) {
-//             if (i & (1LL << bit)) {
-//                 result[bit]++;
-//             }
-//         }
-//     }
-//     return result;
-// }
-// void print_it(vector<LL> &nums) {
-//     for (auto to : nums) {
-//         cout << to << ' ';
-//     }
-//     cout << endl;
-// }
-// int validator() {
-//     for (int i = 1; i < 100000; ++i) {
-//         auto fast = bits_cnt(i);
-//         auto slow = slow_bits_cnt(i);
-//         if (fast != slow) {
-//             print_it(fast);
-//             print_it(slow);
-//             cout << i << endl;
-//             return 0;
-//         }
-//     }
-//     return 0;
-// }
-LL solve(LL n) {
-    vector<LL> cnt = bits_cnt(n);
-    LL ans = 0;
-    for (int bit = 0; bit < 60; ++bit) {
-        LL cnt_mod = cnt[bit] * cnt[bit] % mod;
-        LL pw2_mod = (1LL << bit) % mod;
-        ans = (ans + cnt_mod * pw2_mod % mod) % mod;
+LL solve() {
+    int n, m;
+    cin >> n >> m;
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
     }
-    return ans;
+    vector<int> b = a;
+    sort(b.begin(), b.end());
+    while (b.size() != m) {
+        b.pop_back();
+    }
+    cout << get_smallest(a, b) << endl;
+    return 0;
 }
 int main() {
 #ifdef LOCAL
@@ -70,14 +63,7 @@ int main() {
     cout.setf(ios::fixed); cout.precision(15);
     cerr.setf(ios::fixed); cerr.precision(10);
     auto t1 = clock();
-    int t;
-    cin >> t;
-    for (int i = 0; i < t; ++i) {
-        LL n;
-        cin >> n;
-        cout << solve(n) << endl;
-    }
-    // validator();
+    solve();
     auto t2 = clock();
 #ifdef LOCAL
     cout << "Time = " << (double)(t2 - t1) / 1.0e6 << " sec" << endl;
